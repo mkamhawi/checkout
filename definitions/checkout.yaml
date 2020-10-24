@@ -1,0 +1,91 @@
+swagger: "2.0"
+info:
+  description: "This is a sample swagger for the checkout microservice of an imaginary web store."
+  version: "1.0.0"
+  title: "Checkout"
+  license:
+    name: "MIT"
+    url: "https://opensource.org/licenses/MIT"
+host: "imaginary-webstore.com"
+basePath: "/checkout"
+tags:
+- name: "order"
+  description: "Checkout an order"
+schemes:
+- "https"
+paths:
+  /order:
+    post:
+      tags:
+      - "order"
+      summary: "Proceed checking out a cart"
+      description: ""
+      operationId: "checkout"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "order object to be checked out"
+        required: true
+        schema:
+          $ref: "#/definitions/Order"
+      responses:
+        "200":
+          description: success
+          schema:
+            $ref: "#/definitions/OrderPlacedResponse"
+        "400":
+          description: "Invalid request"
+      security:
+      - store_auth:
+        - "write:pets"
+        - "read:pets"
+securityDefinitions:
+  store_auth:
+    type: "oauth2"
+    authorizationUrl: "http://store.swagger.io/oauth/dialog"
+    flow: "implicit"
+    scopes:
+      write:pets: "modify pets in your account"
+      read:pets: "read your pets"
+definitions:
+  Order:
+    type: object
+    properties:
+      cartId:
+        description: id of the cart to be checked out
+        type: string
+        format: uuid
+      cardId:
+        description: id of the card to be used for the payment
+        type: string
+        format: uuid
+      shippingDate:
+        description: shipping date for the order
+        type: string
+        format: "date-time"
+      status:
+        type: string
+        description: "Order Status"
+        enum:
+        - "placed"
+        - "approved"
+        - "delivered"
+        default: "placed"
+      complete:
+        type: boolean
+        default: false
+  OrderPlacedResponse:
+    type: object
+    properties:
+      oredrId:
+        description: id of the placed order
+        type: string
+        format: uuid
+      transactionId:
+        description: id of the successful payment transaction
+        type: string
+        format: uuid

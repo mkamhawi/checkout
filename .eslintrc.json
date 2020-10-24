@@ -1,0 +1,34 @@
+{
+  "extends": "airbnb-base",
+  "plugins": [
+    "import"
+  ],
+  "rules": {
+    "comma-dangle": [
+      "error",
+      "never"
+    ],
+    "strict": "off",
+    "complexity": ["warn", 20],
+    "no-underscore-dangle": "off",
+    "object-curly-newline": [
+      "error",
+      {
+        "consistent": true
+      }
+    ],
+    "import/no-extraneous-dependencies": [
+      "error",
+      {
+        "devDependencies": true,
+        "optionalDependencies": false
+      }
+    ]
+  },
+  "env": {
+    "browser": false,
+    "commonjs": true,
+    "es6": true,
+    "mocha": true
+  }
+}
