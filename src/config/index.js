@@ -5,6 +5,17 @@ module.exports = {
   logging: {
     level: process.env.LOG_LEVEL || 'info'
   },
+  store: {
+    timezone: process.env.STORE_TIMEZONE || 'Africa/Cairo',
+    defaultCurrency: process.env.DEFAULT_CURRENCY || 'EGP'
+  },
+  constants: {
+    orderStatus: {
+      placed: 'placed',
+      approved: 'approved',
+      delivered: 'delivered'
+    }
+  },
   cart: {
     url: process.env.CART_URL || 'http://localhost:4000/cart',
     apiKey: process.env.CART_API_KEY || 'api-key'

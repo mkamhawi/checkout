@@ -13,7 +13,7 @@ Environment variables required for this service to run:
 | Environment variable | Description | Example
 | - | - | - |
 | EXPRESS_PORT | port express is listening to | 3000 |
-| LOG_LEVEL | logging level | info |
+| LOG_LEVEL | logging level | 'info' |
 | CART_URL | base url for cart microservice | |
 | CART_API_KEY | API key for cart microservice | |
 | PROMOTION_URL | base url for promotion microservice | |
@@ -22,3 +22,5 @@ Environment variables required for this service to run:
 | PAYMENT_API_KEY | API key for payment microservice | |
 | DB_SERVICE_URL | base url for the database access microservice | |
 | DBS_API_KEY | API key for the database access microservice | |
+| STORE_TIMEZONE | The time-zone for the web store | 'America/New_York' |
+| DEFAULT_CURRENCY | Default currency for the store | 'USD' |

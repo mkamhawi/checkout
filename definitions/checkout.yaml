@@ -54,6 +54,10 @@ securityDefinitions:
 definitions:
   Order:
     type: object
+    required:
+      - cartId
+      - cardId
+      - shippingDate
     properties:
       cartId:
         description: id of the cart to be checked out
@@ -75,9 +79,6 @@ definitions:
         - "approved"
         - "delivered"
         default: "placed"
-      complete:
-        type: boolean
-        default: false
   OrderPlacedResponse:
     type: object
     properties:
