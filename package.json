@@ -38,6 +38,8 @@
     "bunyan": "^1.8.14",
     "express": "^4.17.1",
     "moment": "^2.29.1",
-    "moment-timezone": "^0.5.31"
+    "moment-timezone": "^0.5.31",
+    "request": "^2.88.2",
+    "request-promise": "^4.2.6"
   }
 }

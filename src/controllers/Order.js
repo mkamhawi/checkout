@@ -3,9 +3,11 @@ const { store, constants } = require('../config');
 const {
   logger,
   errors: {
-    InvalidRequestError
+    InvalidRequestError,
+    ServerError
   }
 } = require('../../utils');
+const { cartAdaptor } = require('../adaptors');
 
 module.exports = class Order {
   constructor(payload) {
@@ -15,6 +17,15 @@ module.exports = class Order {
       shippingDate: moment(payload.shippingDate).tz(store.timezone).format('YYYY-MM-DD'),
       status: payload.status || constants.orderStatus.placed
     };
+  }
+
+  async getCart() {
+    try {
+      this.cart = await cartAdaptor.getCart(this.orderAudit.cartId);
+    } catch (error) {
+      logger.debug(error);
+      throw new ServerError('Unexpected error');
+    }
   }
 
   isMissingRequiredParams() {
@@ -38,6 +49,7 @@ module.exports = class Order {
   async place() {
     try {
       this.validateOrder();
+      this.getCart();
     } catch (error) {
       logger.debug(error);
       throw error;

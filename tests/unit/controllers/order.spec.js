@@ -1,11 +1,14 @@
 const { expect } = require('chai');
 const moment = require('moment-timezone');
+const nock = require('nock');
 const {
-  store
-} = require('../../../src/config/index');
+  store,
+  cart
+} = require('../../../src/config');
 const {
   errors: {
-    InvalidRequestError
+    InvalidRequestError,
+    ServerError
   }
 } = require('../../../utils');
 const Order = require('../../../src/controllers/Order');
@@ -19,15 +22,15 @@ const sampleRequest = {
 };
 
 describe('Order controller tests', () => {
-  context('Validating orders', () => {
-    it('Should throw invalid request error if a required param is missing', async () => {
-      const input = {
+  context('#validateOrder failures', () => {
+    it('Should throw invalid request error if a required param is missing', () => {
+      const payload = {
         ...sampleRequest
       };
-      delete input.cardId;
-      const order = initializeOrder(input);
+      delete payload.cardId;
+      const order = initializeOrder(payload);
       try {
-        await order.place();
+        order.validateOrder();
         throw new Error();
       } catch (error) {
         expect(error).to.be.instanceOf(InvalidRequestError);
@@ -35,18 +38,41 @@ describe('Order controller tests', () => {
       }
     });
 
-    it('Should throw invalid request error if the shipping date is invalid', async () => {
-      const input = {
+    it('Should throw invalid request error if the shipping date is invalid', () => {
+      const payload = {
         ...sampleRequest,
         shippingDate: moment().tz(store.timezone).format()
       };
-      const order = initializeOrder(input);
+      const order = initializeOrder(payload);
       try {
-        await order.place();
+        order.validateOrder();
         throw new Error();
       } catch (error) {
         expect(error).to.be.instanceOf(InvalidRequestError);
         expect(error.details).to.be.eql('Invalid shipping date');
+      }
+    });
+  });
+
+  context('#getCart failures', () => {
+    beforeEach(() => {
+      nock.cleanAll();
+    });
+
+    it('Should throw server error if cart is not found', async () => {
+      const payload = {
+        ...sampleRequest
+      };
+      const order = initializeOrder(payload);
+      const cartNock = nock(cart.url)
+        .get(`/${payload.cartId}`)
+        .reply(404, { message: 'Resource not found' });
+      try {
+        await order.getCart();
+        throw new Error();
+      } catch (error) {
+        expect(error).to.be.instanceOf(ServerError);
+        cartNock.done();
       }
     });
   });
