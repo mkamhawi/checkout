@@ -3,8 +3,10 @@ const iphone = {
   name: 'iphone 12 pro',
   category: 'electronics',
   seller: 'Apple',
-  price: 20000,
-  currency: 'EGP',
+  unitPrice: {
+    amount: 20000,
+    currency: 'EGP'
+  },
   quantity: 1,
   isPremium: true
 };
@@ -14,8 +16,10 @@ const airPods = {
   name: 'airPods pro',
   category: 'electronics',
   seller: 'Apple',
-  price: 3000,
-  currency: 'EGP',
+  unitPrice: {
+    amount: 3000,
+    currency: 'EGP'
+  },
   quantity: 1,
   isPremium: true
 };
@@ -25,8 +29,10 @@ const novel = {
   name: 'a tale of two cities',
   category: 'books',
   seller: 'Penguin Books',
-  price: 100,
-  currency: 'EGP',
+  unitPrice: {
+    amount: 100,
+    currency: 'EGP'
+  },
   quantity: 2,
   isPremium: false
 };

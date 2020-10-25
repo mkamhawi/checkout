@@ -40,6 +40,7 @@
     "moment": "^2.29.1",
     "moment-timezone": "^0.5.31",
     "request": "^2.88.2",
-    "request-promise": "^4.2.6"
+    "request-promise": "^4.2.6",
+    "uuid": "^8.3.1"
   }
 }

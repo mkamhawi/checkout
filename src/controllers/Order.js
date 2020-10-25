@@ -1,4 +1,5 @@
 const moment = require('moment-timezone');
+const uuid = require('uuid').v4;
 const { store, constants } = require('../config');
 const {
   logger,
@@ -9,7 +10,9 @@ const {
 } = require('../../utils');
 const {
   cartAdaptor,
-  promotionAdaptor
+  promotionAdaptor,
+  paymentAdaptor,
+  databaseAdaptor
 } = require('../adaptors');
 
 module.exports = class Order {
@@ -41,6 +44,28 @@ module.exports = class Order {
     }
   }
 
+  async chargeCreditCard() {
+    try {
+      return await paymentAdaptor.chargeCreditCard(
+        this.orderAudit.cartId,
+        this.totalAmount,
+        store.defaultCurrency
+      );
+    } catch (error) {
+      logger.debug(error);
+      throw new ServerError('Unexpected error');
+    }
+  }
+
+  async saveOrderAudit() {
+    try {
+      return await databaseAdaptor.saveOrder(this.orderAudit);
+    } catch (error) {
+      logger.debug(error);
+      throw new ServerError('Unexpected error');
+    }
+  }
+
   isMissingRequiredParams() {
     return !this.orderAudit.cartId || !this.orderAudit.cardId;
   }
@@ -65,7 +90,7 @@ module.exports = class Order {
   calculateTotalAmount() {
     const discountPercentage = this.getDiscountPercentage();
     return this.cart.products.reduce((total, item) => {
-      const itemTotal = item.quantity * item.price;
+      const itemTotal = item.quantity * item.unitPrice.amount;
       // eslint-disable-next-line no-param-reassign
       total += item.isPremium ? itemTotal : (1 - discountPercentage) * itemTotal;
       return total;
@@ -79,16 +104,31 @@ module.exports = class Order {
     if (!this.isValidShippingDate()) {
       throw new InvalidRequestError('Invalid shipping date');
     }
+    if (this.cart) {
+      this.cart.products.forEach((item) => {
+        if (item.unitPrice.currency !== store.defaultCurrency) {
+          throw new ServerError('unimplemented feature');
+        }
+      });
+    }
   }
 
   async place() {
     try {
-      this.validateOrder();
       this.cart = await this.getCart();
+      this.validateOrder();
       if (this.orderAudit.promocode) {
         this.promotion = await this.getPromotionDetails();
       }
       this.totalAmount = this.calculateTotalAmount();
+      this.paymentReceipt = await this.chargeCreditCard();
+      this.orderAudit.orderId = uuid();
+      this.orderAudit.transactionId = this.paymentReceipt.transactionId;
+      await this.saveOrderAudit();
+      return {
+        orderId: this.orderAudit.orderId,
+        transactionId: this.orderAudit.transactionId
+      };
     } catch (error) {
       logger.debug(error);
       throw error;
