@@ -4,7 +4,7 @@ Checkout is a sample microservice of an imaginary web store, this repo is used a
 
 # Usecases
 
-* [Place order](./docs/diagrams/place-order.md): place an order.
+* [Place order](./docs/diagrams/place-order.png): place an order.
 
 # Environment variables
 
