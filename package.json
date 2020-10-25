@@ -9,8 +9,11 @@
   "scripts": {
     "test": "npm run test:unit",
     "test:unit": "LOG_LEVEL=INFO npx nyc --reporter=lcov --report-dir=./coverage/unit ./node_modules/.bin/mocha --reporter spec --exit ./tests/unit/*",
+    "test:feature": "LOG_LEVEL=INFO npx cucumber-js ./tests/feature/*/*.feature",
+    "test:onlyFeature": "LOG_LEVEL=INFO npx cucumber-js",
     "lint": "npx eslint . --max-warnings=0",
-    "start": "node index.js"
+    "start": "node index.js",
+    "start:stubs": "npx robohydra ./tests/feature/remote-stubs/stub.conf"
   },
   "nyc": {
     "exclude": [
@@ -35,7 +38,9 @@
     "robohydra": "^0.6.8"
   },
   "dependencies": {
+    "body-parser": "^1.19.0",
     "bunyan": "^1.8.14",
+    "cucumber": "^7.0.0-rc.0",
     "express": "^4.17.1",
     "moment": "^2.29.1",
     "moment-timezone": "^0.5.31",

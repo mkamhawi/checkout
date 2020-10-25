@@ -39,18 +39,21 @@ const novel = {
 
 module.exports = {
   mixedProducts: {
+    cartId: '9746d88d-8c5b-47d0-ade5-cce56a7ac781',
     products: [
       iphone,
       novel
     ]
   },
   premiumProducts: {
+    cartId: '8814e056-614e-408d-94d7-af6e7c5c8184',
     products: [
       iphone,
       airPods
     ]
   },
   nonPremiumProducts: {
+    cartId: '6029ea11-793b-42be-9c28-ba2826b8f658',
     products: [
       novel
     ]

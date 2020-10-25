@@ -70,7 +70,7 @@ definitions:
       shippingDate:
         description: shipping date for the order
         type: string
-        format: "date-time"
+        format: "date"
       promocode:
         description: promotion code
         type: string

@@ -113,6 +113,12 @@ module.exports = class Order {
     }
   }
 
+  approveOrder() {
+    this.orderAudit.orderId = uuid();
+    this.orderAudit.transactionId = this.paymentReceipt.transactionId;
+    this.orderAudit.status = constants.orderStatus.approved;
+  }
+
   async place() {
     try {
       this.cart = await this.getCart();
@@ -122,9 +128,9 @@ module.exports = class Order {
       }
       this.totalAmount = this.calculateTotalAmount();
       this.paymentReceipt = await this.chargeCreditCard();
-      this.orderAudit.orderId = uuid();
-      this.orderAudit.transactionId = this.paymentReceipt.transactionId;
+      this.approveOrder();
       await this.saveOrderAudit();
+      logger.info({ message: 'saved order audit' });
       return {
         orderId: this.orderAudit.orderId,
         transactionId: this.orderAudit.transactionId

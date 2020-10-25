@@ -6,7 +6,7 @@ const chargeCreditCard = async (cardId, amount, currency) => {
   try {
     logger.info({ message: `Authorizing ${currency} ${amount} on card: ${cardId}` });
     const response = await rp({
-      url: `${payment.url}/${cardId}`,
+      url: `${payment.url}`,
       method: 'POST',
       headers: {
         'x-api-key': payment.apiKey
