@@ -2,6 +2,10 @@ const { expect } = require('chai');
 const moment = require('moment-timezone');
 const nock = require('nock');
 const {
+  cartResponses,
+  promotionResponses
+} = require('../../samples/responses');
+const {
   store,
   cart
 } = require('../../../src/config');
@@ -74,6 +78,47 @@ describe('Order controller tests', () => {
         expect(error).to.be.instanceOf(ServerError);
         cartNock.done();
       }
+    });
+  });
+
+  context('#calculateTotalAmount', () => {
+    it('Should calculate total correctly if no promotion is found', () => {
+      const order = initializeOrder(sampleRequest);
+      Object.assign(order, {
+        cart: cartResponses.mixedProducts
+      });
+      const totalAmount = order.calculateTotalAmount();
+      expect(totalAmount).to.be.eql(20200);
+    });
+
+    it('Should calculate total correctly if promotion is expired', () => {
+      const order = initializeOrder(sampleRequest);
+      Object.assign(order, {
+        promotion: promotionResponses.expiredpromotion,
+        cart: cartResponses.mixedProducts
+      });
+      const totalAmount = order.calculateTotalAmount();
+      expect(totalAmount).to.be.eql(20200);
+    });
+
+    it('Should calculate total correctly if a promotion is active', () => {
+      const order = initializeOrder(sampleRequest);
+      Object.assign(order, {
+        promotion: promotionResponses.activepromotion,
+        cart: cartResponses.mixedProducts
+      });
+      const totalAmount = order.calculateTotalAmount();
+      expect(totalAmount).to.be.eql(20180);
+    });
+
+    it('Should ignore an active promotion for premium items', () => {
+      const order = initializeOrder(sampleRequest);
+      Object.assign(order, {
+        promotion: promotionResponses.activepromotion,
+        cart: cartResponses.premiumProducts
+      });
+      const totalAmount = order.calculateTotalAmount();
+      expect(totalAmount).to.be.eql(23000);
     });
   });
 });

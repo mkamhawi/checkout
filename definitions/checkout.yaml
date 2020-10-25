@@ -71,6 +71,9 @@ definitions:
         description: shipping date for the order
         type: string
         format: "date-time"
+      promocode:
+        description: promotion code
+        type: string
       status:
         type: string
         description: "Order Status"
