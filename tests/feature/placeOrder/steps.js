@@ -3,7 +3,7 @@ const {
   Given,
   When,
   Then
-} = require('cucumber');
+} = require('@cucumber/cucumber');
 const rp = require('request-promise');
 
 Given('The cartId is {string}', (cartId) => {
